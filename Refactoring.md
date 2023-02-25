@@ -10,16 +10,10 @@ You will be graded on the exhaustiveness and quality of your unit tests, the dep
 
 ## Your Explanation Here
 
-- Used optional chaining (?.) and nullish coalescing (??) operators to make the code more concise and easier to read. These operators help to avoid unnecessary checks for undefined or null values.
+- This code checks if an event object is provided. If it is, the function generates a candidate partition key by hashing the JSON representation of the event object using the SHA3-512 algorithm provided by the crypto module. If event.partitionKey is available, the value of candidate is set to event.partitionKey instead of hashing the event object. The double question marks ?? is a nullish coalescing operator, which means that if event.partitionKey is null or undefined, the expression on the right side of ?? will be evaluated.
 
-- Reordered the code for better readability. The main logic of determining the partition key is now consolidated in a single line.
+- After generating the candidate partition key, the function checks if the candidate value is a string. If it's not, the candidate value is converted to a string by calling JSON.stringify().
 
-- Removed unnecessary comments and variable declarations for better clarity.
+- Next, the function checks if the length of the candidate value exceeds MAX_PARTITION_KEY_LENGTH. If it does, the candidate value is hashed again using the SHA3-512 algorithm, and the resulting hash value is used as the partition key.
 
-- Used template literals to concatenate string values, making the code more concise and easier to read.
-
-- Refactored the if (candidate) statement to a single line using a ternary operator for better readability.
-
-- Changed the exports keyword to export default syntax to be more consistent with modern JS module exports.
-
-By refactoring the code in this way, we've made it more concise and easier to read. We've also taken advantage of modern JS features to simplify the logic and make it more efficient. The code is now more organized and easier to understand, with better variable names and less repetition.
+- Finally, if the candidate value is still falsy (e.g., null or undefined), the TRIVIAL_PARTITION_KEY value is returned as the partition key.
